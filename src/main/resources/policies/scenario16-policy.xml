@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsp:Policy wsu:Id="kerberossignandencrypt"
+            xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+            xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+    <wsp:ExactlyOne>
+        <wsp:All>
+            <sp:SymmetricBinding
+                    xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+                <wsp:Policy>
+                    <sp:ProtectionToken>
+                        <wsp:Policy>
+                            <sp:KerberosToken
+                                    sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient">
+                                <wsp:Policy>
+                                    <sp:WssKerberosV5ApReqToken11/>
+                                </wsp:Policy>
+                            </sp:KerberosToken>
+                        </wsp:Policy>
+                    </sp:ProtectionToken>
+                    <sp:AlgorithmSuite>
+                        <wsp:Policy>
+                            <sp:Basic256/>
+                        </wsp:Policy>
+                    </sp:AlgorithmSuite>
+                    <sp:Layout>
+                        <wsp:Policy>
+                            <sp:Lax/>
+                        </wsp:Policy>
+                    </sp:Layout>
+                    <sp:IncludeTimestamp/>
+                    <sp:OnlySignEntireHeadersAndBody/>
+                </wsp:Policy>
+            </sp:SymmetricBinding>
+            <sp:SignedParts
+                    xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+                <sp:Body/>
+            </sp:SignedParts>
+            <sp:Wss11 xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+                <sp:Policy>
+                    <sp:MustSupportRefKeyIdentifier/>
+                    <sp:MustSupportRefIssuerSerial/>
+                    <sp:MustSupportRefThumbprint/>
+                    <sp:RequireSignatureConfirmation/>
+                </sp:Policy>
+            </sp:Wss11>
+            <sp:Trust10 xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+                <wsp:Policy>
+                    <sp:RequireClientEntropy/>
+                    <sp:RequireServerEntropy/>
+                    <sp:MustSupportIssuedTokens/>
+                </wsp:Policy>
+            </sp:Trust10>
+            <rampart:RampartConfig xmlns:rampart="http://ws.apache.org/rampart/policy">
+                <rampart:timestampPrecisionInMilliseconds>true
+                </rampart:timestampPrecisionInMilliseconds>
+                <rampart:timestampTTL>300</rampart:timestampTTL>
+                <rampart:timestampMaxSkew>300</rampart:timestampMaxSkew>
+                <rampart:kerberosConfig>
+                    <!-- Authenticating user -->
+                    <rampart:property name="client.principal.name">isuru_carbon.super</rampart:property>
+                    <!-- Authenticating user password -->
+                    <rampart:property name="client.principal.password">admin</rampart:property>
+                    <!-- To which service client needs to talk to -->
+                    <rampart:property name="service.principal.name">esb/localhost@WSO2.ORG</rampart:property>
+                    <!-- Kerberos jaas.conf -->
+                    <rampart:property name="java.security.auth.login.config">/Users/isuruu/wso2/configs/security-client/src/main/java/repo/jaas.conf</rampart:property>
+                    <rampart:property name="javax.security.auth.useSubjectCredsOnly">true</rampart:property>
+                    <!-- Kerberos configurations -->
+                    <rampart:property name="java.security.krb5.conf">
+                        /Users/isuruu/wso2/configs/security-client/src/main/java/repo/krb.conf
+                    </rampart:property>
+                </rampart:kerberosConfig>
+            </rampart:RampartConfig>
+        </wsp:All>
+    </wsp:ExactlyOne>
+</wsp:Policy>
